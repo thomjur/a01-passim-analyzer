@@ -21,7 +21,6 @@ def parse_cluster_from_jsonl(filename: str):
     # We are merging both dataframes on uid+cluster
     # For each reference from a target to a source text, there should be a single row now
     df_merged = pd.merge(df.drop(columns="src"), df_src, on=["uid", "cluster"], how="inner")
-    print(df_merged.info())
     # We are saving every cluster in a separate CSV file for now
     cluster_list = df_merged["cluster"].unique()
     grouped = df_merged.groupby("cluster")
@@ -36,5 +35,5 @@ def parse_cluster_from_jsonl(filename: str):
 def parse_pairwise_from_jsonl(filename: str):
     '''Retrieving pairwise alignments created with passim --pairwise from JSONL.'''
     df = pd.read_json(filename, lines=True)
-    df_filtered = df[["uid", "uid2", "s1", "s2"]]
+    df_filtered = df[["uid", "uid2", "s1", "s2", "begin", "end"]]
     df_filtered.to_csv("analyzer/output/pairwise.csv")
