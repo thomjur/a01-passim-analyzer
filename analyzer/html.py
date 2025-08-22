@@ -57,7 +57,7 @@ def create_html_tr_doc_viewer(filepath: str, suffix: str = ""):
                 with div(id=f"target_text_{idx}"):
                     h2(f"{row['tafsir_title']} ({row['author_death_dce']})")
                     p(f"ID: {row['uid']}")
-                    p(f"Reuses from: {row['src_uid'] if not row['src_uid'] == -1 else '-'}")
+                    p(f"Reuses from: {row['src_uid']}")
                     p(f"Author: {row['author_name']}")
                     p(row["text"])
                     if row['src_uid'] in SC_DICT and (row["src_uid"], row["uid"]) not in VISITED_LIST:
@@ -72,7 +72,7 @@ def create_html_tr_doc_viewer(filepath: str, suffix: str = ""):
                             dominate.util.text(src_text[tr_end_idx:])
                         p("Pairwise alignment:")
                         # Searching for entries
-                        df_alignment = df_pairwise.loc[(df_pairwise["uid2"] == row["uid"]) & (df_pairwise["uid"] == row["src_uid"]),:].reset_index()
+                        df_alignment = df_pairwise.loc[(df_pairwise["uid2"] == row["uid"]) & (df_pairwise["uid"] == row["src_uid"]) & (df_pairwise["begin"] >= row["src_begin"]) & (df_pairwise["end"] <= row["src_end"]),:].reset_index()
                         if not df_alignment.empty:
                             p("The following alignment pairs have been identified:")
                             for idx1, row1 in df_alignment.iterrows():
@@ -85,5 +85,5 @@ def create_html_tr_doc_viewer(filepath: str, suffix: str = ""):
                         VISITED_LIST.append((row["src_uid"], row["uid"]))
 
     # Save HTML file
-    with open(f"analyzer/html/index{suffix}.html", "w") as f:
+    with open(f"analyzer/html/index_{current_cluster}.html", "w") as f:
         f.write(doc.render())
