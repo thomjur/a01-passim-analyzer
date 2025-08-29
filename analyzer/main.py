@@ -40,6 +40,7 @@ def main() -> None:
         # Skip the aggregated CSV files, only process individual cluster files
         if filename not in ("pairwise.csv", "sources.csv"):
             filepath: str = f"analyzer/output/{filename}"
+            # Create traditional text viewer
             create_html_tr_doc_viewer(filepath, idx)
 
 
